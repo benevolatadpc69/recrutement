@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADPC 69 — Recrutement</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bleu:#003189;--bleu2:#0047CC;--orange:#E86C00;--orange2:#FF7A00;
+  --gris0:#F0F2F8;--gris1:#E2E6F0;--gris2:#B0BACE;--gris3:#6B7A99;
+  --texte:#0A1628;--card:#FFFFFF;
+  --ombre:0 2px 12px rgba(0,49,137,0.10);--ombre2:0 4px 24px rgba(0,49,137,0.16);
+  --radius2:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gris0);color:var(--texte);min-height:100vh;font-size:14px}
+
+/* HEADER */
+.header{background:var(--bleu);color:#fff;padding:0 20px;display:flex;align-items:center;gap:10px;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.header-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;flex-shrink:0}
+.logo-badge{background:var(--orange);color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:3px 8px;border-radius:5px}
+.header-nav{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 8px;border-radius:6px;cursor:pointer;transition:.15s;white-space:nowrap}
+.nav-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-btn.active{background:rgba(255,255,255,.2);color:#fff}
+.nav-btn.params{color:#FFB87A}
+.nav-btn.params.active,.nav-btn.params:hover{background:var(--orange);color:#fff}
+.nav-btn.archive{color:#94A3B8}
+.nav-btn.archive.active,.nav-btn.archive:hover{background:#475569;color:#fff}
+.header-add{background:var(--orange);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;transition:.15s;margin-left:4px;white-space:nowrap;flex-shrink:0}
+.header-add:hover{background:var(--orange2)}
+.presence-badge{display:flex;align-items:center;gap:5px;background:rgba(16,185,129,.2);color:#6EE7B7;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;flex-shrink:0}
+.presence-dot{width:7px;height:7px;border-radius:50%;background:#10B981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.app{padding:20px 24px;max-width:1400px;margin:0 auto}
+
+/* DASHBOARD */
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border-radius:var(--radius2);padding:16px 20px;box-shadow:var(--ombre);border:1px solid var(--gris1)}
+.stat-num{font-size:28px;font-weight:600;color:var(--bleu);line-height:1}
+.stat-label{font-size:12px;color:var(--gris3);margin-top:4px;font-weight:500}
+.stat-card.orange .stat-num{color:var(--orange)}
+.stat-card.vert .stat-num{color:#1a7a4a}
+.stat-card.rouge .stat-num{color:#DC2626}
+.stat-card.gris .stat-num{color:var(--gris3)}
+
+/* FILTRES */
+.filtres{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filtre-btn{background:var(--card);border:1px solid var(--gris1);color:var(--gris3);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;cursor:pointer;transition:.15s}
+.filtre-btn:hover{border-color:var(--orange);color:var(--orange)}
+.filtre-btn.active{background:var(--bleu);border-color:var(--bleu);color:#fff}
+.search-box{margin-left:auto;display:flex;align-items:center;background:var(--card);border:1px solid var(--gris1);border-radius:8px;padding:5px 12px;min-width:180px}
+.search-box input{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--texte);background:none;width:100%}
+
+/* KANBAN */
+.kanban-wrap{overflow-x:auto;padding-bottom:8px}
+.kanban{display:flex;gap:12px;min-width:max-content}
+.kanban-col{width:220px;flex-shrink:0}
+.kanban-header{padding:8px 12px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.kanban-header .count{background:rgba(255,255,255,.35);padding:1px 7px;border-radius:10px;font-size:11px}
+.kanban-body{background:rgba(255,255,255,.6);border-radius:0 0 8px 8px;padding:8px;min-height:120px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--gris1);border-top:none}
+.k-candidature .kanban-header{background:#4A6FA5;color:#fff}
+.k-sei .kanban-header{background:var(--orange);color:#fff}
+.k-entretien .kanban-header{background:#8B5CF6;color:#fff}
+.k-adhesion .kanban-header{background:#10B981;color:#fff}
+.k-refuse .kanban-header{background:#EF4444;color:#fff}
+.k-custom .kanban-header{background:#475569;color:#fff}
+.kard{background:var(--card);border-radius:8px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,49,137,.08);border:1px solid var(--gris1);cursor:pointer;transition:.15s}
+.kard:hover{box-shadow:var(--ombre2);transform:translateY(-1px)}
+.kard-name{font-size:13px;font-weight:600}
+.kard-meta{font-size:11px;color:var(--gris3);margin-top:3px}
+.kard-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.tag-lyon{background:#DBEAFE;color:#1E40AF}
+.tag-tassin{background:#D1FAE5;color:#065F46}
+.tag-villefranche{background:#FEF3C7;color:#92400E}
+.tag-villeurbanne{background:#EDE9FE;color:#5B21B6}
+.tag-double{background:#E0F2FE;color:#0369A1}
+.tag-forme{background:#FCE7F3;color:#9D174D}
+.kard-progress{display:flex;gap:3px;margin-top:7px}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--gris1)}
+.prog-dot.ok{background:#10B981}
+.prog-dot.warn{background:var(--orange)}
+
+/* TABLE */
+.table-wrap{background:var(--card);border-radius:var(--radius2);box-shadow:var(--ombre);border:1px solid var(--gris1);overflow:hidden}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--bleu);color:#fff;font-size:12px;font-weight:500;padding:10px 14px;text-align:left;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--gris0);transition:.1s}
+tbody tr:hover{background:#F5F8FF}
+tbody td{padding:9px 14px;font-size:13px;color:var(--texte);white-space:nowrap}
+.statut-pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px}
+.s-candidature{background:#DBEAFE;color:#1E40AF}
+.s-sei{background:#FFF0E0;color:#A04A00}
+.s-entretien{background:#EDE9FE;color:#5B21B6}
+.s-adhesion{background:#D1FAE5;color:#065F46}
+.s-refuse{background:#FEE2E2;color:#991B1B}
+.s-abandon{background:#F1F5F9;color:#475569}
+.s-archive{background:#1E293B;color:#94A3B8}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,10,40,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--radius2);width:100%;max-width:720px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:slideUp .2s ease}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{background:var(--bleu);color:#fff;padding:16px 20px;border-radius:var(--radius2) var(--radius2) 0 0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:600}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;padding:2px 6px}
+.modal-close:hover{color:#fff}
+.modal-body{padding:20px;max-height:78vh;overflow-y:auto}
+.modal-section{margin-bottom:20px}
+.modal-section-title{font-size:11px;font-weight:600;color:var(--bleu);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gris0)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.one{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;font-weight:500;color:var(--gris3)}
+.form-group input,.form-group select,.form-group textarea{border:1px solid var(--gris1);border-radius:7px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--texte);background:var(--gris0);transition:.15s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,108,0,.1)}
+.form-group textarea{resize:vertical;min-height:80px}
+.check-row{display:flex;align-items:center;gap:8px;padding:6px 0}
+.check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--orange)}
+.check-row label{font-size:13px;cursor:pointer}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--gris0);display:flex;gap:10px;justify-content:flex-end}
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;border:none;transition:.15s}
+.btn-primary{background:var(--bleu);color:#fff}
+.btn-primary:hover{background:var(--bleu2)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-orange:hover{background:var(--orange2)}
+.btn-danger{background:#DC2626;color:#fff}
+.btn-danger:hover{background:#B91C1C}
+.btn-ghost{background:var(--gris0);color:var(--gris3);border:1px solid var(--gris1)}
+.btn-ghost:hover{background:var(--gris1)}
+.badge-ok{color:#10B981;font-weight:600}
+.badge-no{color:var(--gris2)}
+.notes-template{background:var(--gris0);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--gris3);margin-bottom:8px;border-left:3px solid var(--orange)}
+.notes-template strong{color:var(--orange);display:block;margin-bottom:2px}
+.auteur-badge{display:inline-flex;align-items:center;font-size:11px;background:var(--gris0);padding:2px 8px;border-radius:10px;border:1px solid var(--gris1);font-weight:600;color:var(--bleu);margin:1px}
+.multi-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--gris0);border:1px solid var(--gris1);border-radius:7px;min-height:38px}
+.chip{display:flex;align-items:center;gap:4px;background:var(--bleu);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px}
+.chip button{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;padding:0 0 0 2px;line-height:1}
+.chip button:hover{color:#fff}
+@media(max-width:768px){.header-nav{display:none}.app{padding:12px}.form-grid{grid-template-columns:1fr}.dashboard{grid-template-columns:repeat(2,1fr)}}
+
+/* ANTENNE */
+.antenne-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.antenne-card{background:var(--card);border-radius:var(--radius2);box-shadow:var(--ombre);border:1px solid var(--gris1);overflow:hidden}
+.antenne-card-header{padding:12px 16px;font-size:13px;font-weight:600;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.a-tutorat{background:linear-gradient(135deg,var(--bleu),var(--orange))}
+.antenne-list{padding:8px}
+.empty{text-align:center;padding:30px 20px;color:var(--gris2);font-size:13px}
+.section-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:16px;font-weight:600}
+.section-count{font-size:12px;color:var(--gris3);background:var(--gris1);padding:2px 10px;border-radius:10px;font-weight:500}
+
+/* PARAMÈTRES */
+.params-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.params-card{background:var(--card);border-radius:var(--radius2);box-shadow:var(--ombre);border:1px solid var(--gris1);overflow:hidden}
+.params-header{background:var(--bleu);color:#fff;padding:12px 18px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.params-body{padding:16px}
+.membre-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--gris1);margin-bottom:8px;background:var(--gris0);transition:.15s}
+.membre-row:hover{border-color:var(--gris2)}
+.membre-avatar{width:38px;height:38px;border-radius:50%;background:var(--bleu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.membre-info{flex:1;min-width:0}
+.membre-nom{font-size:13px;font-weight:600}
+.membre-fn{font-size:11px;color:var(--gris3)}
+.membre-mail{font-size:11px;color:var(--orange);margin-top:1px}
+.btn-icon{background:none;border:none;cursor:pointer;color:var(--gris2);font-size:13px;padding:4px 6px;border-radius:5px;transition:.15s}
+.btn-icon:hover{background:var(--gris1);color:#DC2626}
+.add-form{border:1px dashed var(--gris2);border-radius:8px;padding:14px;margin-top:8px}
+.lien-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--gris1);margin-bottom:6px;background:var(--gris0)}
+.lien-row a{color:var(--bleu);font-size:13px;font-weight:500;text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lien-row a:hover{color:var(--orange);text-decoration:underline}
+.antenne-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;border:1px solid var(--gris1);background:var(--gris0);font-size:12px;font-weight:500;margin:3px}
+.antenne-pill .dot{width:8px;height:8px;border-radius:50%}
+.kanban-config{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.kanban-toggle{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;border:1px solid var(--gris1);background:var(--gris0);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+.kanban-toggle.on{background:var(--bleu);border-color:var(--bleu);color:#fff}
+.kanban-toggle.off{opacity:.5}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal-day{padding:6px;border-radius:6px;font-size:11px;text-align:center;min-height:36px}
+.cal-day.header{font-weight:600;color:var(--gris3);min-height:auto}
+.cal-day.has-sei{background:#FFF0E0;border:1px solid var(--orange);cursor:pointer}
+.cal-day.has-sei:hover{background:#FFE0C0}
+.cal-day.today{border:2px solid var(--bleu)}
+.cal-day.empty{color:var(--gris1)}
+.cal-sei-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);margin:2px auto 0}
+.journal-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--gris0)}
+.journal-avatar{width:28px;height:28px;border-radius:50%;background:var(--bleu);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.journal-content{flex:1}
+.journal-text{font-size:13px}
+.journal-time{font-size:11px;color:var(--gris3);margin-top:2px}
+
+/* STATS PÉRIODE */
+.stats-periode{background:var(--card);border-radius:var(--radius2);box-shadow:var(--ombre);border:1px solid var(--gris1);padding:20px;margin-top:20px}
+.periode-tabs{display:flex;gap:4px}
+.periode-tab{background:var(--gris0);border:1px solid var(--gris1);color:var(--gris3);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;cursor:pointer;transition:.15s;border:none}
+.periode-tab.active{background:var(--bleu);color:#fff}
+.stats-table{width:100%;border-collapse:collapse}
+.stats-table th{font-size:11px;font-weight:600;color:var(--gris3);text-align:left;padding:6px 10px;border-bottom:1px solid var(--gris1);text-transform:uppercase;letter-spacing:.04em}
+.stats-table td{font-size:13px;padding:8px 10px;border-bottom:1px solid var(--gris0)}
+.stats-table tr:hover td{background:var(--gris0)}
+.stats-bar{height:4px;border-radius:2px;background:var(--gris1);margin-top:3px}
+.stats-bar-fill{height:100%;border-radius:2px;background:var(--orange)}
+.num{font-weight:600;color:var(--bleu)}
+.pct{font-size:11px;color:var(--gris3)}
+
+/* ARCHIVE */
+.archive-banner{background:#1E293B;color:#94A3B8;border-radius:var(--radius2);padding:12px 20px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;justify-content:space-between}
+.archive-banner strong{color:#CBD5E1}
+/* Onglets paramètres */
+.ptab{background:none;border:none;border-bottom:3px solid transparent;color:var(--gris3);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:8px 16px;cursor:pointer;transition:.15s;margin-bottom:-2px}
+.ptab:hover{color:var(--texte)}
+.ptab.active{color:var(--bleu);border-bottom-color:var(--bleu);font-weight:600}
+/* Post-its */
+.postit{width:200px;min-height:160px;border-radius:4px;padding:14px;position:relative;box-shadow:2px 4px 12px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:8px;transition:.2s}
+.postit:hover{transform:translateY(-2px);box-shadow:4px 8px 20px rgba(0,0,0,.16)}
+.postit-auteur{font-size:12px;font-weight:700;color:rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:.05em}
+.postit-texte{font-size:13px;color:rgba(0,0,0,.75);flex:1;line-height:1.5;font-family:'DM Sans',sans-serif}
+.postit-date{font-size:10px;color:rgba(0,0,0,.4);margin-top:auto}
+.postit-del{position:absolute;top:6px;right:8px;background:none;border:none;cursor:pointer;color:rgba(0,0,0,.3);font-size:14px;opacity:0;transition:.15s}
+.postit:hover .postit-del{opacity:1}
+.postit-del:hover{color:rgba(0,0,0,.6)}
+.pi-color-btn{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:.1s}
+.pi-color-btn.active{border-color:var(--texte);transform:scale(1.15)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo"><span class="logo-badge">ADPC 69</span>Recrutement</div>
+  <div class="header-nav" id="main-nav">
+    <button class="nav-btn active" onclick="showVue('dashboard')">Tableau de bord</button>
+    <button class="nav-btn" onclick="showVue('kanban')">Kanban</button>
+    <button class="nav-btn" onclick="showVue('liste')">Liste</button>
+    <button class="nav-btn" onclick="showVue('sei')">SEI</button>
+    <button class="nav-btn" onclick="showVue('entretien')">Entretien</button>
+    <button class="nav-btn" onclick="showVue('antenne')">Antennes</button>
+    <button class="nav-btn" onclick="showVue('tutorat')">Tutorat</button>
+    <button class="nav-btn archive" onclick="showVue('archive')">Archive</button>
+    <button class="nav-btn params" onclick="showVue('parametres')">⚙ Pôle</button>
+  </div>
+  <div class="presence-badge" id="presence-badge" style="display:none"><span class="presence-dot"></span><span id="presence-count">1</span></div>
+  <button class="header-add" onclick="openModal()">+ Candidat</button>
+</div>
+
+<div class="app">
+
+<!-- DASHBOARD -->
+<div id="vue-dashboard">
+  <div class="dashboard" id="stats-grid"></div>
+  <div class="section-bar"><span class="section-title">Activité récente</span></div>
+  <div class="table-wrap"><div class="table-scroll"><table><thead><tr><th>Candidat</th><th>Antenne</th><th>Profil</th><th>Statut</th><th>Date</th></tr></thead><tbody id="tbody-recent"></tbody></table></div></div>
+  <div class="stats-periode" style="margin-top:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <span class="section-title">Statistiques par période</span>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="sel-annee" onchange="renderStatsPeriode()" style="border:1px solid var(--gris1);border-radius:6px;padding:4px 8px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--card)"></select>
+        <div class="periode-tabs">
+          <button class="periode-tab active" onclick="setPeriode('mois',this)">Par mois</button>
+          <button class="periode-tab" onclick="setPeriode('annee',this)">Annuel</button>
+        </div>
+      </div>
+    </div>
+    <div id="stats-periode-content"></div>
+  </div>
+</div>
+
+<!-- KANBAN -->
+<div id="vue-kanban" style="display:none">
+  <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--gris3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Colonnes visibles</div>
+      <div class="kanban-config" id="kanban-col-config"></div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--gris3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Filtrer par antenne</div>
+      <div class="kanban-config" id="kanban-ant-config"></div>
+    </div>
+  </div>
+  <div class="search-box" style="margin-bottom:12px;max-width:280px"><input type="text" placeholder="Rechercher..." id="search-kanban" oninput="renderKanban()"></div>
+  <div class="kanban-wrap"><div class="kanban" id="kanban-board"></div></div>
+</div>
+
+<!-- LISTE -->
+<div id="vue-liste" style="display:none">
+  <div class="filtres" id="filtres-liste">
+    <button class="filtre-btn active" onclick="filtreStatut('',this)">Tous</button>
+    <button class="filtre-btn" onclick="filtreStatut('Candidature',this)">Candidature</button>
+    <button class="filtre-btn" onclick="filtreStatut('SEI',this)">SEI</button>
+    <button class="filtre-btn" onclick="filtreStatut('Entretien',this)">Entretien</button>
+    <button class="filtre-btn" onclick="filtreStatut('Adhésion',this)">Adhésion</button>
+    <div class="search-box"><input type="text" placeholder="Rechercher..." id="search-liste" oninput="renderListe()"></div>
+  </div>
+  <div class="table-wrap"><div class="table-scroll">
+    <table><thead><tr><th>Nom</th><th>Prénom</th><th>Antenne</th><th>Profil</th><th>Diplômes</th><th>Statut</th><th>Date cand.</th><th></th></tr></thead>
+    <tbody id="tbody-liste"></tbody></table>
+  </div></div>
+</div>
+
+<!-- SEI -->
+<div id="vue-sei" style="display:none">
+  <div class="section-bar"><span class="section-title">Candidats en cours de SEI</span><span class="section-count" id="count-sei">0</span></div>
+  <div class="table-wrap"><div class="table-scroll">
+    <table><thead><tr><th>Nom Prénom</th><th>Antenne</th><th>Date SEI</th><th>Invitation</th><th>Présent</th><th>Statut SEI</th><th></th></tr></thead>
+    <tbody id="tbody-sei"></tbody></table>
+  </div></div>
+</div>
+
+<!-- ENTRETIEN -->
+<div id="vue-entretien" style="display:none">
+  <div class="section-bar"><span class="section-title">Candidats en phase entretien</span><span class="section-count" id="count-entretien">0</span></div>
+  <div class="table-wrap"><div class="table-scroll">
+    <table><thead><tr><th>Nom Prénom</th><th>Antenne</th><th>Date</th><th>Réalisé par</th><th>Mail</th><th>Résultat</th><th></th></tr></thead>
+    <tbody id="tbody-entretien"></tbody></table>
+  </div></div>
+</div>
+
+<!-- ANTENNES -->
+<div id="vue-antenne" style="display:none">
+  <div class="antenne-grid" id="antenne-grid"></div>
+</div>
+
+<!-- TUTORAT -->
+<div id="vue-tutorat" style="display:none">
+  <div id="tutorat-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px"></div>
+  <div class="section-bar"><span class="section-title">Tuteurs actifs</span></div>
+  <div id="tutorat-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:24px"></div>
+  <div class="section-bar"><span class="section-title">Tuteurs sans filleul</span><span class="section-count" id="count-sans-filleul">0</span></div>
+  <div class="table-wrap"><div class="table-scroll">
+    <table><thead><tr><th>Tuteur</th><th>Filleuls</th><th>Validés</th></tr></thead>
+    <tbody id="tbody-sans-filleul"></tbody></table>
+  </div></div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="vue-archive" style="display:none">
+  <div class="archive-banner"><span><strong>Archives</strong> — Fiches hors process actif</span>
+    <div style="display:flex;gap:6px">
+      <button class="filtre-btn active" id="arch-btn-all" onclick="filtreArchive('all',this)" style="font-size:11px;padding:3px 10px">Tous</button>
+      <button class="filtre-btn" id="arch-btn-refus" onclick="filtreArchive('Refusé',this)" style="font-size:11px;padding:3px 10px">Refusés</button>
+      <button class="filtre-btn" id="arch-btn-abandon" onclick="filtreArchive('Abandon',this)" style="font-size:11px;padding:3px 10px">Abandons</button>
+      <button class="filtre-btn" id="arch-btn-archive" onclick="filtreArchive('Archivé',this)" style="font-size:11px;padding:3px 10px">Archivés</button>
+    </div>
+  </div>
+  <div class="table-wrap"><div class="table-scroll">
+    <table><thead><tr><th>Nom</th><th>Prénom</th><th>Antenne</th><th>Statut</th><th>Date cand.</th><th>Raison</th><th></th></tr></thead>
+    <tbody id="tbody-archive"></tbody></table>
+  </div></div>
+</div>
+
+<!-- PARAMÈTRES -->
+<div id="vue-parametres" style="display:none">
+
+  <!-- ONGLETS PARAMÈTRES -->
+  <div style="display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--gris1);padding-bottom:0">
+    <button class="ptab active" id="ptab-pole" onclick="showPtab('pole',this)">Pôle</button>
+    <button class="ptab" id="ptab-config" onclick="showPtab('config',this)">Configuration</button>
+    <button class="ptab" id="ptab-journal" onclick="showPtab('journal',this)">Journal</button>
+    <button class="ptab" id="ptab-postit" onclick="showPtab('postit',this)">Tableau d'équipe</button>
+  </div>
+
+  <!-- ONGLET PÔLE -->
+  <div id="ptab-content-pole">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+      <!-- Infos pôle (grande carte gauche) -->
+      <div class="params-card" style="height:fit-content">
+        <div class="params-header" style="background:linear-gradient(135deg,var(--bleu),var(--bleu2))">
+          Infos du pôle
+        </div>
+        <div class="params-body">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px;background:var(--gris0);border-radius:12px">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--bleu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;flex-shrink:0" id="pole-avatar-big">PC</div>
+            <div>
+              <div style="font-size:16px;font-weight:600" id="pole-nom-affich">Protection Civile 69</div>
+              <div style="font-size:12px;color:var(--gris3);margin-top:2px" id="pole-resp-affich">Responsable : —</div>
+              <div style="font-size:12px;color:var(--orange);margin-top:2px" id="pole-mail-affich">—</div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Responsable du pôle</label>
+            <input id="p-responsable" type="text" placeholder="Nom du responsable" oninput="saveParams();updatePoleAffich()">
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Mail de contact</label>
+            <input id="p-mailcontact" type="email" placeholder="recrutement@rhone.protection-civile.org" oninput="saveParams();updatePoleAffich()">
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Adresse du siège</label>
+            <input id="p-adresse" type="text" placeholder="Ex : 158 av. Francis de Pressensé, 69200 Vénissieux" oninput="saveParams()">
+          </div>
+          <div class="form-group">
+            <label>Notes internes</label>
+            <textarea id="p-notes" style="min-height:100px" placeholder="Procédures, rappels, informations générales..." oninput="saveParams()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Équipe -->
+      <div class="params-card">
+        <div class="params-header">
+          Équipe du pôle
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="count-membres" style="background:rgba(255,255,255,.2);padding:1px 8px;border-radius:10px;font-size:11px">0 membres</span>
+            <button class="btn-icon" style="color:rgba(255,255,255,.85);font-size:18px;font-weight:300" onclick="openAjoutMembre()">+</button>
+          </div>
+        </div>
+        <div class="params-body">
+          <div id="liste-membres"></div>
+          <div id="form-ajout-membre" style="display:none">
+            <div class="add-form">
+              <div style="font-size:11px;font-weight:600;color:var(--bleu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Nouveau membre</div>
+              <div class="form-grid" style="gap:8px;margin-bottom:8px">
+                <div class="form-group"><label>Nom complet *</label><input id="m-nom" type="text" placeholder="DUPONT Jean"></div>
+                <div class="form-group"><label>Fonction *</label><input id="m-fonction" type="text" placeholder="Responsable recrutement"></div>
+              </div>
+              <div class="form-group" style="margin-bottom:6px">
+                <label>Mail (@rhone.protection-civile.org)</label>
+                <div style="display:flex;gap:5px;align-items:center">
+                  <input id="m-mail-prenom" type="text" placeholder="prenom" style="flex:1">
+                  <span style="color:var(--gris3);font-size:12px;flex-shrink:0">.</span>
+                  <input id="m-mail-nom" type="text" placeholder="nom" style="flex:1">
+                  <span style="color:var(--gris3);font-size:10px;white-space:nowrap;flex-shrink:0">@rhone…</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+                <button class="btn btn-ghost" onclick="fermerAjoutMembre()">Annuler</button>
+                <button class="btn btn-orange" onclick="sauvegarderMembre()">Ajouter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents utiles -->
+      <div class="params-card">
+        <div class="params-header">
+          Documents utiles
+          <button class="btn-icon" style="color:rgba(255,255,255,.85);font-size:18px;font-weight:300" onclick="openAjoutLien()">+</button>
+        </div>
+        <div class="params-body">
+          <div id="liste-liens"></div>
+          <div id="form-ajout-lien" style="display:none">
+            <div class="add-form">
+              <div class="form-grid one" style="gap:8px">
+                <div class="form-group"><label>Nom du document</label><input id="l-nom" type="text" placeholder="Ex : Formulaire adhésion"></div>
+                <div class="form-group"><label>URL *</label><input id="l-url" type="url" placeholder="https://..."></div>
+              </div>
+              <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+                <button class="btn btn-ghost" onclick="fermerAjoutLien()">Annuler</button>
+                <button class="btn btn-orange" onclick="sauvegarderLien()">Ajouter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ONGLET CONFIGURATION -->
+  <div id="ptab-content-config" style="display:none">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+      <div class="params-card">
+        <div class="params-header">
+          Antennes
+          <button class="btn-icon" style="color:rgba(255,255,255,.85);font-size:18px;font-weight:300" onclick="openAjoutAntenne()">+</button>
+        </div>
+        <div class="params-body">
+          <div id="liste-antennes"></div>
+          <div id="form-ajout-antenne" style="display:none">
+            <div class="add-form">
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Nom de l'antenne *</label>
+                <input id="ant-nom" type="text" placeholder="Ex : Bron">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Couleur</label>
+                <input id="ant-couleur" type="color" value="#003189" style="height:36px;padding:2px;border-radius:6px;border:1px solid var(--gris1);background:var(--gris0);cursor:pointer">
+              </div>
+              <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="fermerAjoutAntenne()">Annuler</button>
+                <button class="btn btn-orange" onclick="sauvegarderAntenne()">Ajouter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLET JOURNAL -->
+  <div id="ptab-content-journal" style="display:none">
+    <div class="params-card">
+      <div class="params-header">Journal d'activité</div>
+      <div class="params-body" style="max-height:500px;overflow-y:auto">
+        <div id="journal-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLET TABLEAU D'ÉQUIPE (post-its) -->
+  <div id="ptab-content-postit" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <span class="section-title">Tableau d'équipe</span>
+      <button class="btn btn-orange" onclick="openNouveauPostit()">+ Ajouter un mot</button>
+    </div>
+    <div id="postit-board" style="display:flex;flex-wrap:wrap;gap:16px;min-height:200px"></div>
+    <div id="form-postit" style="display:none;margin-top:16px">
+      <div class="params-card" style="max-width:400px">
+        <div class="params-header">Nouveau message</div>
+        <div class="params-body">
+          <div class="form-group" style="margin-bottom:10px">
+            <label>Votre nom</label>
+            <input id="pi-auteur" type="text" placeholder="Votre prénom">
+          </div>
+          <div class="form-group" style="margin-bottom:10px">
+            <label>Votre message</label>
+            <textarea id="pi-texte" style="min-height:80px" placeholder="Bonne semaine à tous !"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Couleur du post-it</label>
+            <div style="display:flex;gap:8px">
+              <div class="pi-color-btn active" style="background:#FEF08A" data-color="#FEF08A" onclick="selectPostitColor(this)"></div>
+              <div class="pi-color-btn" style="background:#BBF7D0" data-color="#BBF7D0" onclick="selectPostitColor(this)"></div>
+              <div class="pi-color-btn" style="background:#BFDBFE" data-color="#BFDBFE" onclick="selectPostitColor(this)"></div>
+              <div class="pi-color-btn" style="background:#FECACA" data-color="#FECACA" onclick="selectPostitColor(this)"></div>
+              <div class="pi-color-btn" style="background:#E9D5FF" data-color="#E9D5FF" onclick="selectPostitColor(this)"></div>
+              <div class="pi-color-btn" style="background:#FED7AA" data-color="#FED7AA" onclick="selectPostitColor(this)"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="fermerNouveauPostit()">Annuler</button>
+            <button class="btn btn-orange" onclick="sauvegarderPostit()">Publier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /app -->
+
+<!-- MODAL CANDIDAT -->
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+<div class="modal">
+  <div class="modal-header">
+    <span class="modal-title" id="modal-title">Nouveau candidat</span>
+    <button class="modal-close" onclick="closeModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-section">
+      <div class="modal-section-title">Identité</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Nom *</label><input id="f-nom" type="text" placeholder="DUPONT"></div>
+        <div class="form-group"><label>Prénom *</label><input id="f-prenom" type="text" placeholder="Jean"></div>
+        <div class="form-group"><label>Mail *</label><input id="f-mail" type="email" placeholder="jean@mail.com"></div>
+        <div class="form-group"><label>Téléphone</label><input id="f-tel" type="tel" placeholder="06 XX XX XX XX"></div>
+        <div class="form-group"><label>Code postal</label><input id="f-cp" type="text" placeholder="69007"></div>
+        <div class="form-group"><label>Âge</label><input id="f-age" type="number" placeholder="25" min="16" max="80"></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Profil</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Antenne *</label><select id="f-antenne"></select></div>
+        <div class="form-group"><label>Profil particulier</label>
+          <select id="f-profil"><option value="">Aucun</option><option>Double affectation</option><option>Déjà formé</option></select>
+        </div>
+        <div class="form-group"><label>Diplômes</label><input id="f-diplomes" type="text" placeholder="PSC1, PSE1..."></div>
+        <div class="form-group"><label>Origine</label>
+          <select id="f-origine"><option value="">Choisir...</option><option>Réseaux sociaux</option><option>Internet</option><option>Postes de secours</option><option>Actions sociales</option><option>Autre</option></select>
+        </div>
+      </div>
+      <div class="form-grid one" style="margin-top:10px">
+        <div class="form-group"><label>Motivation</label><textarea id="f-motivation" placeholder="Texte libre..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Statut global</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Statut *</label>
+          <select id="f-statut"><option>Candidature</option><option>SEI</option><option>Entretien</option><option>Adhésion</option><option>Refusé</option><option>Abandon</option><option>Archivé</option></select>
+        </div>
+        <div class="form-group"><label>Date candidature</label><input id="f-datecand" type="date"></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">SEI</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Date SEI</label><input id="f-datesei" type="date"></div>
+        <div class="form-group"><label>Statut SEI</label>
+          <select id="f-statutsei"><option value="">—</option><option>En attente</option><option>Confirmé</option><option>Présent</option><option>Absent</option></select>
+        </div>
+      </div>
+      <div class="check-row"><input type="checkbox" id="f-invitsei"><label for="f-invitsei">Invitation SEI envoyée</label></div>
+      <div class="check-row"><input type="checkbox" id="f-presentsei"><label for="f-presentsei">Candidat présent à la SEI</label></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Entretien</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Date entretien</label><input id="f-dateentretien" type="date"></div>
+        <div class="form-group"><label>Résultat</label>
+          <select id="f-resultat"><option value="">—</option><option>Accepté</option><option>Refusé</option><option>En attente</option></select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:8px">
+        <label>Réalisé par (plusieurs possibles)</label>
+        <div id="chips-entretienpar" class="multi-chips"></div>
+        <select id="sel-entretienpar" onchange="addChip('entretienpar',this)" style="margin-top:6px;width:100%;border:1px solid var(--gris1);border-radius:7px;padding:6px 10px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gris0)">
+          <option value="">+ Ajouter un membre...</option>
+        </select>
+      </div>
+      <div class="check-row"><input type="checkbox" id="f-mailentretien"><label for="f-mailentretien">Mail convocation envoyé</label></div>
+      <div class="form-grid one" style="margin-top:10px">
+        <div class="form-group">
+          <label>Notes entretien</label>
+          <div class="notes-template"><strong>Template :</strong> Motivation · Disponibilités · Points de vigilance · Formations à prévoir</div>
+          <textarea id="f-notes" style="min-height:100px" placeholder="Motivation :&#10;&#10;Disponibilités :&#10;&#10;Points de vigilance :&#10;&#10;Formations à prévoir :"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Adhésion</div>
+      <div class="check-row"><input type="checkbox" id="f-dossierenv"><label for="f-dossierenv">Dossier envoyé au candidat</label></div>
+      <div class="check-row"><input type="checkbox" id="f-dossierret"><label for="f-dossierret">Dossier retourné signé</label></div>
+      <div class="check-row"><input type="checkbox" id="f-eprotec"><label for="f-eprotec">Profil E-Protec créé</label></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Tutorat</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Tuteur assigné</label><input id="f-tuteur" type="text" placeholder="Nom du tuteur"></div>
+        <div class="form-group"><label>Début tutorat</label><input id="f-datedebuttutorat" type="date"></div>
+        <div class="form-group"><label>Fin tutorat</label><input id="f-datefintutorat" type="date"></div>
+      </div>
+      <div class="check-row"><input type="checkbox" id="f-tutoratvalide"><label for="f-tutoratvalide">Tutorat validé</label></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Notes libres</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Renseigné par (plusieurs possibles)</label>
+        <div id="chips-notespar" class="multi-chips"></div>
+        <select id="sel-notespar" onchange="addChip('notespar',this)" style="margin-top:6px;width:100%;border:1px solid var(--gris1);border-radius:7px;padding:6px 10px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--gris0)">
+          <option value="">+ Ajouter un membre...</option>
+        </select>
+      </div>
+      <div class="form-grid one">
+        <div class="form-group"><label>Notes</label><textarea id="f-noteslibres" style="min-height:90px" placeholder="Observations..."></textarea></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+    <button class="btn btn-ghost" id="btn-archiver" style="display:none" onclick="archiverCandidat()">Archiver</button>
+    <button class="btn btn-danger" id="btn-supprimer" style="display:none" onclick="supprimerCandidat()">Supprimer</button>
+    <button class="btn btn-primary" onclick="sauvegarder()">Enregistrer</button>
+  </div>
+</div>
+</div>
+
+<script>
+const API_URL='https://script.google.com/macros/s/AKfycbye5CY0nYJd-YK8UH3yYytMNDqgGS6FPZk6SFgEXMtvN6F28Hw41gihQ-tK-2GsuYskjQ/exec';
+const MOIS=['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+const STATUTS_ACTIFS=['Candidature','SEI','Entretien','Adhésion'];
+const STATUTS_ARCHIVE=['Refusé','Abandon','Archivé'];
+const K_COLS_DEF=[
+  {key:'Candidature',cls:'k-candidature',label:'Candidature'},
+  {key:'SEI',cls:'k-sei',label:'SEI'},
+  {key:'Entretien',cls:'k-entretien',label:'Entretien'},
+  {key:'Adhésion',cls:'k-adhesion',label:'Adhésion'},
+  {key:'Refusé',cls:'k-refuse',label:'Refusés'},
+];
+
+let candidats=[],membres=[],params={},liens=[],antennes=[],journal=[];
+let currentId=null,filtreStatutActive='',filtreArchiveActive='all';
+let chipsState={entretienpar:[],notespar:[]};
+let periodeMode='mois';
+let calDate=new Date();
+let kanbanColsVisible=K_COLS_DEF.map(c=>c.key);
+let kanbanAntFiltre='';
+
+// ── DONNÉES ───────────────────────────────────────────────
+function loadLocal(){
+  liens=JSON.parse(localStorage.getItem('adpc69_liens')||'[]');
+  antennes=JSON.parse(localStorage.getItem('adpc69_antennes')||'["Lyon","Tassin","Villefranche","Villeurbanne"]');
+  journal=JSON.parse(localStorage.getItem('adpc69_journal')||'[]');
+  const kv=localStorage.getItem('adpc69_kanban_cols');
+  if(kv) kanbanColsVisible=JSON.parse(kv);
+}
+
+function saveLocal(){
+  localStorage.setItem('adpc69_liens',JSON.stringify(liens));
+  localStorage.setItem('adpc69_antennes',JSON.stringify(antennes));
+  localStorage.setItem('adpc69_journal',JSON.stringify(journal));
+  localStorage.setItem('adpc69_kanban_cols',JSON.stringify(kanbanColsVisible));
+}
+
+function addJournal(texte){
+  const entry={texte,date:new Date().toISOString(),user:sessionStorage.getItem('adpc69_uid')||'?'};
+  journal.unshift(entry);
+  if(journal.length>100) journal.pop();
+  saveLocal();
+}
+
+// ── SYNC ──────────────────────────────────────────────────
+function showSync(msg,ok=null){
+  let el=document.getElementById('sync-ind');
+  if(!el){el=document.createElement('div');el.id='sync-ind';el.style.cssText='position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;z-index:999;transition:.3s;box-shadow:0 2px 12px rgba(0,0,0,.2)';document.body.appendChild(el);}
+  el.style.background=ok===null?'#E86C00':ok?'#10B981':'#DC2626';
+  el.style.color='#fff';el.textContent=msg;el.style.opacity='1';
+  if(ok!==null) setTimeout(()=>el.style.opacity='0',2500);
+}
+
+async function apiGet(a){
+  const r=await fetch(`${API_URL}?action=${a}`,{redirect:'follow'});
+  return r.json();
+}
+async function apiPost(p){
+  const r=await fetch(API_URL,{
+    method:'POST',
+    redirect:'follow',
+    headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify(p)
+  });
+  return r.json();
+}
+
+async function chargerDonnees(){
+  showSync('Chargement...');
+  try{
+    const[c,m,p]=await Promise.all([apiGet('getCandidats'),apiGet('getMembres'),apiGet('getParams')]);
+    candidats=Array.isArray(c)?c:[];
+    membres=Array.isArray(m)?m:[];
+    params=p||{};
+    candidats.forEach((c,i)=>{if(!c.id)c.id=i+1;});
+    showSync('Synchronisé',true);
+    updatePresence();
+    render();
+  }catch(e){
+    showSync('Hors ligne — données locales',false);
+    render();
+  }
+}
+
+// ── PRÉSENCE ──────────────────────────────────────────────
+function updatePresence(){
+  const key='adpc69_presence',now=Date.now();
+  let p=JSON.parse(localStorage.getItem(key)||'{}');
+  const uid=sessionStorage.getItem('adpc69_uid')||(()=>{const id='u'+Math.random().toString(36).slice(2,7);sessionStorage.setItem('adpc69_uid',id);return id;})();
+  p[uid]=now;
+  Object.keys(p).forEach(k=>{if(now-p[k]>120000)delete p[k];});
+  localStorage.setItem(key,JSON.stringify(p));
+  const nb=Object.keys(p).length;
+  const badge=document.getElementById('presence-badge');
+  document.getElementById('presence-count').textContent=nb+' connecté'+(nb>1?'s':'');
+  badge.style.display=nb>1?'flex':'none';
+  setTimeout(updatePresence,30000);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function showVue(v){
+  document.querySelectorAll('[id^="vue-"]').forEach(el=>el.style.display='none');
+  document.getElementById('vue-'+v).style.display='block';
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const btns=[...document.querySelectorAll('.nav-btn')];
+  const map={dashboard:0,kanban:1,liste:2,sei:3,entretien:4,antenne:5,tutorat:6,archive:7,parametres:8};
+  if(btns[map[v]])btns[map[v]].classList.add('active');
+  if(v==='parametres'){renderParametres();renderCalSEI();renderJournal();renderBenevoles();}
+  render();
+}
+
+function render(){
+  renderStats();renderRecent();renderStatsPeriode();
+  renderKanbanConfig();renderKanban();
+  renderListe();renderSEI();renderEntretien();renderAntenne();renderTutorat();
+  renderArchive();
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function renderStats(){
+  const actifs=candidats.filter(c=>STATUTS_ACTIFS.includes(c.statut));
+  const t=actifs.length;
+  const sei=actifs.filter(c=>c.statut==='SEI').length;
+  const ent=actifs.filter(c=>c.statut==='Entretien').length;
+  const adh=actifs.filter(c=>c.statut==='Adhésion').length;
+  const m=new Date().getMonth(),nv=actifs.filter(c=>c.datecand&&new Date(c.datecand).getMonth()===m).length;
+  const arch=candidats.filter(c=>STATUTS_ARCHIVE.includes(c.statut)).length;
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${t}</div><div class="stat-label">En process</div></div>
+    <div class="stat-card"><div class="stat-num">${sei}</div><div class="stat-label">En cours SEI</div></div>
+    <div class="stat-card"><div class="stat-num">${ent}</div><div class="stat-label">En entretien</div></div>
+    <div class="stat-card vert"><div class="stat-num">${adh}</div><div class="stat-label">En adhésion</div></div>
+    <div class="stat-card"><div class="stat-num">${nv}</div><div class="stat-label">Nouveaux ce mois</div></div>
+    <div class="stat-card gris"><div class="stat-num">${arch}</div><div class="stat-label">Archivés</div></div>`;
+}
+
+function renderRecent(){
+  const list=[...candidats].filter(c=>STATUTS_ACTIFS.includes(c.statut)).sort((a,b)=>new Date(b.datecand||0)-new Date(a.datecand||0)).slice(0,8);
+  document.getElementById('tbody-recent').innerHTML=list.map(c=>`<tr onclick="openModal(${c.id})" style="cursor:pointer"><td><strong>${c.nom} ${c.prenom}</strong></td><td>${tagAntenne(c.antenne)}</td><td>${tagProfil(c.profil)}</td><td>${pillStatut(c.statut)}</td><td>${c.datecand||'—'}</td></tr>`).join('');
+}
+
+// ── STATS PÉRIODE ─────────────────────────────────────────
+function setPeriode(mode,btn){periodeMode=mode;document.querySelectorAll('.periode-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderStatsPeriode();}
+function renderStatsPeriode(){
+  const annees=[...new Set(candidats.map(c=>c.datecand?new Date(c.datecand).getFullYear():null).filter(Boolean))].sort((a,b)=>b-a);
+  const sel=document.getElementById('sel-annee');
+  const cur=parseInt(sel.value)||annees[0]||new Date().getFullYear();
+  sel.innerHTML=annees.map(y=>`<option value="${y}" ${y===cur?'selected':''}>${y}</option>`).join('');
+  if(periodeMode==='annee'){
+    const rows=annees.map(y=>{
+      const base=c=>c.datecand&&new Date(c.datecand).getFullYear()===y;
+      const adh=candidats.filter(c=>base(c)&&c.statut==='Adhésion').length;
+      const tut=candidats.filter(c=>base(c)&&c.tuteur).length;
+      const aba=candidats.filter(c=>base(c)&&c.statut==='Abandon').length;
+      const ref=candidats.filter(c=>base(c)&&c.statut==='Refusé').length;
+      const tot=candidats.filter(base).length||1;
+      return{y,adh,tut,aba,ref,tot};
+    });
+    document.getElementById('stats-periode-content').innerHTML=`<table class="stats-table"><thead><tr><th>Année</th><th>Adhésions</th><th>Tutorés</th><th>Abandons</th><th>Refus</th><th>Total</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${r.y}</strong></td><td><span class="num">${r.adh}</span> <span class="pct">${pct(r.adh,r.tot)}</span></td><td><span class="num">${r.tut}</span> <span class="pct">${pct(r.tut,r.tot)}</span></td><td><span class="num">${r.aba}</span> <span class="pct">${pct(r.aba,r.tot)}</span></td><td><span class="num">${r.ref}</span> <span class="pct">${pct(r.ref,r.tot)}</span></td><td><span class="num">${r.tot}</span></td></tr>`).join('')}</tbody></table>`;
+  }else{
+    const maxTot=Math.max(...MOIS.map((_,i)=>candidats.filter(c=>c.datecand&&new Date(c.datecand).getFullYear()===cur&&new Date(c.datecand).getMonth()===i).length),1);
+    document.getElementById('stats-periode-content').innerHTML=`<table class="stats-table"><thead><tr><th>Mois</th><th>Candidatures</th><th>Adhésions</th><th>Tutorés</th><th>Abandons</th><th>Refus</th></tr></thead><tbody>${MOIS.map((nom,i)=>{
+      const base=c=>c.datecand&&new Date(c.datecand).getFullYear()===cur&&new Date(c.datecand).getMonth()===i;
+      const tot=candidats.filter(base).length;
+      const adh=candidats.filter(c=>base(c)&&c.statut==='Adhésion').length;
+      const tut=candidats.filter(c=>base(c)&&c.tuteur).length;
+      const aba=candidats.filter(c=>base(c)&&c.statut==='Abandon').length;
+      const ref=candidats.filter(c=>base(c)&&c.statut==='Refusé').length;
+      return `<tr><td><strong>${nom}</strong></td><td><span class="num">${tot}</span><div class="stats-bar"><div class="stats-bar-fill" style="width:${Math.round(tot/maxTot*100)}%"></div></div></td><td><span class="num">${adh}</span> <span class="pct">${tot?pct(adh,tot):''}</span></td><td><span class="num">${tut}</span></td><td><span class="num">${aba}</span></td><td><span class="num">${ref}</span></td></tr>`;
+    }).join('')}</tbody></table>`;
+  }
+}
+function pct(v,t){return t?`(${Math.round(v/t*100)}%)`:''}
+
+// ── KANBAN CONFIG ─────────────────────────────────────────
+function renderKanbanConfig(){
+  document.getElementById('kanban-col-config').innerHTML=K_COLS_DEF.map(c=>`
+    <div class="kanban-toggle ${kanbanColsVisible.includes(c.key)?'on':'off'}" onclick="toggleKanbanCol('${c.key}',this)">${c.label}</div>`).join('');
+  document.getElementById('kanban-ant-config').innerHTML=`
+    <div class="kanban-toggle ${kanbanAntFiltre===''?'on':'off'}" onclick="setKanbanAnt('',this)">Toutes</div>`+
+    antennes.map(a=>`<div class="kanban-toggle ${kanbanAntFiltre===a?'on':'off'}" onclick="setKanbanAnt('${a}',this)">${a}</div>`).join('');
+}
+
+function toggleKanbanCol(key,btn){
+  if(kanbanColsVisible.includes(key)){
+    if(kanbanColsVisible.length<=1)return;
+    kanbanColsVisible=kanbanColsVisible.filter(k=>k!==key);
+  }else{kanbanColsVisible.push(key);}
+  saveLocal();renderKanbanConfig();renderKanban();
+}
+function setKanbanAnt(a,btn){kanbanAntFiltre=a;renderKanbanConfig();renderKanban();}
+
+function renderKanban(){
+  let list=candidats.filter(c=>STATUTS_ACTIFS.includes(c.statut)||c.statut==='Refusé');
+  if(kanbanAntFiltre)list=list.filter(c=>c.antenne===kanbanAntFiltre);
+  const s=document.getElementById('search-kanban');
+  if(s&&s.value)list=list.filter(c=>(c.nom+' '+c.prenom).toLowerCase().includes(s.value.toLowerCase()));
+  const cols=K_COLS_DEF.filter(c=>kanbanColsVisible.includes(c.key));
+  document.getElementById('kanban-board').innerHTML=cols.map(col=>{
+    const cards=list.filter(c=>col.key==='Refusé'?(c.statut==='Refusé'||c.statut==='Abandon'):c.statut===col.key);
+    return `<div class="kanban-col"><div class="kanban-header ${col.cls}">${col.label}<span class="count">${cards.length}</span></div><div class="kanban-body">${cards.length?cards.map(c=>`<div class="kard" onclick="openModal(${c.id})"><div class="kard-name">${c.nom} ${c.prenom}</div><div class="kard-meta">${c.antenne||''}${c.age?' · '+c.age+' ans':''}</div><div class="kard-tags">${tagAntenne(c.antenne)}${tagProfil(c.profil)}</div><div class="kard-progress">${dots(c)}</div></div>`).join(''):'<div class="empty">Aucun</div>'}</div></div>`;
+  }).join('');
+}
+
+function dots(c){return[c.datecand?'ok':'',c.invitsei?'ok':(c.datesei?'warn':''),c.presentsei?'ok':(c.invitsei?'warn':''),c.mailentretien?'ok':(c.dateentretien?'warn':''),c.resultat==='Accepté'?'ok':(c.resultat?'warn':''),c.eprotec?'ok':(c.dossierenv?'warn':'')].map(s=>`<div class="prog-dot${s?' '+s:''}"></div>`).join('');}
+
+function filtreStatut(s,btn){filtreStatutActive=s;btn.closest('.filtres').querySelectorAll('.filtre-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderListe();}
+
+function renderListe(){
+  let l=candidats.filter(c=>STATUTS_ACTIFS.includes(c.statut));
+  if(filtreStatutActive)l=l.filter(c=>c.statut===filtreStatutActive);
+  const s=document.getElementById('search-liste');
+  if(s&&s.value)l=l.filter(c=>(c.nom+' '+c.prenom).toLowerCase().includes(s.value.toLowerCase()));
+  document.getElementById('tbody-liste').innerHTML=l.length?l.map(c=>`<tr><td><strong>${c.nom}</strong></td><td>${c.prenom}</td><td>${tagAntenne(c.antenne)}</td><td>${tagProfil(c.profil)}</td><td><small>${c.diplomes||'—'}</small></td><td>${pillStatut(c.statut)}</td><td>${c.datecand||'—'}</td><td><button class="btn btn-ghost" style="padding:3px 10px;font-size:12px" onclick="openModal(${c.id})">Ouvrir</button></td></tr>`).join(''):`<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--gris2)">Aucun</td></tr>`;
+}
+
+function renderSEI(){
+  const l=candidats.filter(c=>c.statut==='SEI'||c.datesei);
+  document.getElementById('count-sei').textContent=l.length;
+  document.getElementById('tbody-sei').innerHTML=l.length?l.map(c=>`<tr><td onclick="openModal(${c.id})" style="cursor:pointer"><strong>${c.nom} ${c.prenom}</strong></td><td>${tagAntenne(c.antenne)}</td><td>${c.datesei||'—'}</td><td>${c.invitsei?'<span class="badge-ok">✓</span>':'<span class="badge-no">✗</span>'}</td><td>${c.presentsei?'<span class="badge-ok">✓</span>':'<span class="badge-no">—</span>'}</td><td>${c.statutsei?`<span class="statut-pill s-sei">${c.statutsei}</span>`:'—'}</td><td><button class="btn btn-ghost" style="padding:3px 10px;font-size:12px" onclick="openModal(${c.id})">Modifier</button></td></tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gris2)">Aucun</td></tr>`;
+}
+
+function renderEntretien(){
+  const l=candidats.filter(c=>c.statut==='Entretien'||c.dateentretien);
+  document.getElementById('count-entretien').textContent=l.length;
+  document.getElementById('tbody-entretien').innerHTML=l.length?l.map(c=>`<tr><td onclick="openModal(${c.id})" style="cursor:pointer"><strong>${c.nom} ${c.prenom}</strong></td><td>${tagAntenne(c.antenne)}</td><td>${c.dateentretien||'—'}</td><td>${c.entretienpar?c.entretienpar.split(',').map(n=>`<span class="auteur-badge">${n.trim()}</span>`).join(''):'<span style="color:var(--gris2)">—</span>'}</td><td>${c.mailentretien?'<span class="badge-ok">✓</span>':'<span class="badge-no">✗</span>'}</td><td>${c.resultat?`<span class="statut-pill ${c.resultat==='Accepté'?'s-adhesion':c.resultat==='Refusé'?'s-refuse':'s-sei'}">${c.resultat}</span>`:'—'}</td><td><button class="btn btn-ghost" style="padding:3px 10px;font-size:12px" onclick="openModal(${c.id})">Modifier</button></td></tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gris2)">Aucun</td></tr>`;
+}
+
+function renderAntenne(){
+  document.getElementById('antenne-grid').innerHTML=antennes.map(a=>{
+    const l=candidats.filter(c=>c.antenne===a&&STATUTS_ACTIFS.includes(c.statut));
+    const config=getAntenneConfig(a);
+    return `<div class="antenne-card"><div class="antenne-card-header" style="background:${config.gradient}">${a}<span>${l.length} en process</span></div><div class="antenne-list">${l.length?l.slice(0,5).map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-bottom:1px solid var(--gris0);cursor:pointer" onclick="openModal(${c.id})"><span style="font-size:13px;font-weight:500">${c.nom} ${c.prenom}</span>${pillStatut(c.statut)}</div>`).join('')+(l.length>5?`<div style="padding:8px;font-size:12px;color:var(--gris3);text-align:center">+${l.length-5} autres</div>`:''):'<div class="empty">Aucun en process</div>'}</div></div>`;
+  }).join('');
+}
+
+function getAntenneConfig(nom){
+  const defaults={Lyon:{gradient:'linear-gradient(135deg,#003189,#0047CC)'},Tassin:{gradient:'linear-gradient(135deg,#065F46,#059669)'},Villefranche:{gradient:'linear-gradient(135deg,#92400E,#D97706)'},Villeurbanne:{gradient:'linear-gradient(135deg,#5B21B6,#7C3AED)'}};
+  if(defaults[nom])return defaults[nom];
+  const custom=JSON.parse(localStorage.getItem('adpc69_ant_config')||'{}');
+  const col=custom[nom]||'#003189';
+  return{gradient:`linear-gradient(135deg,${col},${col}CC)`};
+}
+
+function renderTutorat(){
+  const avecT=candidats.filter(c=>c.tuteur&&c.tuteur.trim());
+  const tMap={};
+  avecT.forEach(c=>{const t=c.tuteur.trim();if(!tMap[t])tMap[t]={nom:t,filleuls:[],valides:0};tMap[t].filleuls.push(c);if(c.tutoratvalide)tMap[t].valides++;});
+  const liste=Object.values(tMap).sort((a,b)=>b.filleuls.length-a.filleuls.length);
+  const sansF=liste.filter(t=>t.filleuls.length===0);
+  document.getElementById('tutorat-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${liste.length}</div><div class="stat-label">Tuteurs</div></div>
+    <div class="stat-card vert"><div class="stat-num">${liste.filter(t=>t.filleuls.length>0).length}</div><div class="stat-label">Avec filleul(s)</div></div>
+    <div class="stat-card orange"><div class="stat-num">${sansF.length}</div><div class="stat-label">Sans filleul</div></div>
+    <div class="stat-card"><div class="stat-num">${liste.reduce((m,t)=>Math.max(m,t.filleuls.length),0)}</div><div class="stat-label">Max filleuls</div></div>`;
+  document.getElementById('tutorat-grid').innerHTML=liste.filter(t=>t.filleuls.length>0).map(t=>`<div class="antenne-card"><div class="antenne-card-header a-tutorat">${t.nom}<span>${t.filleuls.length} filleul${t.filleuls.length>1?'s':''} · ${t.valides} validé${t.valides>1?'s':''}</span></div><div class="antenne-list">${t.filleuls.map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-bottom:1px solid var(--gris0);cursor:pointer" onclick="openModal(${c.id})"><span style="font-size:13px;font-weight:500">${c.nom} ${c.prenom}</span><span style="display:flex;gap:6px;align-items:center">${c.tutoratvalide?'<span style="font-size:11px;color:#10B981;font-weight:600">✓</span>':''} ${pillStatut(c.statut)}</span></div>`).join('')}</div></div>`).join('')||'<div class="empty">Aucun tutorat</div>';
+  document.getElementById('count-sans-filleul').textContent=sansF.length;
+  document.getElementById('tbody-sans-filleul').innerHTML=sansF.length?sansF.map(t=>`<tr><td><strong>${t.nom}</strong></td><td>0</td><td>0</td></tr>`).join(''):`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--gris2)">Tous les tuteurs ont au moins un filleul</td></tr>`;
+}
+
+// ── ARCHIVE ───────────────────────────────────────────────
+function filtreArchive(f,btn){
+  filtreArchiveActive=f;
+  document.querySelectorAll('[id^="arch-btn"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderArchive();
+}
+
+function renderArchive(){
+  let l=candidats.filter(c=>STATUTS_ARCHIVE.includes(c.statut));
+  if(filtreArchiveActive!=='all')l=l.filter(c=>c.statut===filtreArchiveActive);
+  document.getElementById('tbody-archive').innerHTML=l.length?l.map(c=>`<tr><td><strong>${c.nom}</strong></td><td>${c.prenom}</td><td>${tagAntenne(c.antenne)}</td><td>${pillStatut(c.statut)}</td><td>${c.datecand||'—'}</td><td><small style="color:var(--gris3)">${c.noteslibres||'—'}</small></td><td>
+    <button class="btn btn-ghost" style="padding:3px 10px;font-size:12px" onclick="openModal(${c.id})">Ouvrir</button>
+    <button class="btn btn-ghost" style="padding:3px 10px;font-size:12px;margin-left:4px" onclick="restaurerCandidat(${c.id})">Restaurer</button>
+  </td></tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gris2)">Aucun archivé</td></tr>`;
+}
+
+async function restaurerCandidat(id){
+  const c=candidats.find(x=>x.id===id);
+  if(!c)return;
+  c.statut='Candidature';
+  addJournal(`Restauré depuis archives : ${c.nom} ${c.prenom}`);
+  showSync('Enregistrement...');
+  try{await apiPost({action:'saveCandidat',data:c});showSync('Restauré',true);}
+  catch(e){showSync('Erreur',false);}
+  render();
+}
+
+// ── PARAMÈTRES ────────────────────────────────────────────
+function renderParametres(){
+  document.getElementById('p-responsable').value=params.responsable||'';
+  document.getElementById('p-mailcontact').value=params.mailcontact||'';
+  document.getElementById('p-notes').value=params.notes||'';
+  document.getElementById('p-adresse').value=params.adresse||'';
+  updatePoleAffich();
+  renderListeMembres();renderListeAntennes();renderListeLiens();renderPostits();
+}
+
+function renderListeMembres(){
+  document.getElementById('count-membres').textContent=membres.length+' membre'+(membres.length>1?'s':'');
+  document.getElementById('liste-membres').innerHTML=membres.length?membres.map((m,i)=>`
+    <div class="membre-row">
+      <div class="membre-avatar">${m.nom.charAt(0)}</div>
+      <div class="membre-info">
+        <div class="membre-nom">${m.nom}</div>
+        <div class="membre-fn">${m.fonction}</div>
+        ${m.mail?`<div class="membre-mail">${m.mail}</div>`:''}
+      </div>
+      <button class="btn-icon" onclick="supprimerMembre(${i})">✕</button>
+    </div>`).join(''):'<div class="empty">Aucun membre</div>';
+}
+
+function openAjoutMembre(){document.getElementById('form-ajout-membre').style.display='block';}
+function fermerAjoutMembre(){document.getElementById('form-ajout-membre').style.display='none';['m-nom','m-fonction','m-mail-prenom','m-mail-nom'].forEach(id=>document.getElementById(id).value='');}
+async function sauvegarderMembre(){
+  const nom=document.getElementById('m-nom').value.trim();
+  const fonction=document.getElementById('m-fonction').value.trim();
+  if(!nom||!fonction){alert('Nom et fonction obligatoires.');return;}
+  const mp=document.getElementById('m-mail-prenom').value.trim().toLowerCase();
+  const mn=document.getElementById('m-mail-nom').value.trim().toLowerCase();
+  const mail=mp&&mn?`${mp}.${mn}@rhone.protection-civile.org`:'';
+  showSync('Enregistrement...');
+  try{await apiPost({action:'saveMembre',data:{nom,fonction,mail}});membres.push({nom,fonction,mail});showSync('Enregistré',true);}
+  catch(e){showSync('Erreur',false);}
+  addJournal(`Membre ajouté : ${nom}`);
+  fermerAjoutMembre();renderListeMembres();
+}
+async function supprimerMembre(i){
+  if(!confirm('Supprimer ce membre ?'))return;
+  showSync('...');
+  try{await apiPost({action:'deleteMembre',index:i});membres.splice(i,1);showSync('Supprimé',true);}
+  catch(e){showSync('Erreur',false);}
+  renderListeMembres();
+}
+
+// Antennes
+function renderListeAntennes(){
+  const cfg=JSON.parse(localStorage.getItem('adpc69_ant_config')||'{}');
+  document.getElementById('liste-antennes').innerHTML=antennes.map((a,i)=>`
+    <div class="antenne-pill">
+      <div class="dot" style="background:${cfg[a]||'#003189'}"></div>
+      <span>${a}</span>
+      <button class="btn-icon" style="padding:0 0 0 4px;font-size:11px" onclick="supprimerAntenne(${i})">✕</button>
+    </div>`).join('');
+}
+
+function openAjoutAntenne(){document.getElementById('form-ajout-antenne').style.display='block';}
+function fermerAjoutAntenne(){document.getElementById('form-ajout-antenne').style.display='none';document.getElementById('ant-nom').value='';}
+function sauvegarderAntenne(){
+  const nom=document.getElementById('ant-nom').value.trim();
+  const col=document.getElementById('ant-couleur').value;
+  if(!nom){alert('Nom obligatoire.');return;}
+  if(antennes.includes(nom)){alert('Cette antenne existe déjà.');return;}
+  antennes.push(nom);
+  const cfg=JSON.parse(localStorage.getItem('adpc69_ant_config')||'{}');
+  cfg[nom]=col;
+  localStorage.setItem('adpc69_ant_config',JSON.stringify(cfg));
+  saveLocal();fermerAjoutAntenne();renderListeAntennes();
+  addJournal(`Antenne ajoutée : ${nom}`);
+  render();
+}
+function supprimerAntenne(i){
+  if(!confirm(`Supprimer l'antenne "${antennes[i]}" ? Les candidats liés à cette antenne ne seront pas supprimés.`))return;
+  const nom=antennes[i];
+  antennes.splice(i,1);
+  saveLocal();renderListeAntennes();addJournal(`Antenne supprimée : ${nom}`);render();
+}
+
+// Liens
+function renderListeLiens(){
+  document.getElementById('liste-liens').innerHTML=liens.length?liens.map((l,i)=>`<div class="lien-row"><a href="${l.url}" target="_blank">${l.nom||l.url}</a><button class="btn-icon" onclick="supprimerLien(${i})">✕</button></div>`).join(''):'<div class="empty">Aucun document</div>';
+}
+function openAjoutLien(){document.getElementById('form-ajout-lien').style.display='block';}
+function fermerAjoutLien(){document.getElementById('form-ajout-lien').style.display='none';['l-nom','l-url'].forEach(id=>document.getElementById(id).value='');}
+function sauvegarderLien(){
+  const nom=document.getElementById('l-nom').value.trim();
+  const url=document.getElementById('l-url').value.trim();
+  if(!url){alert('URL obligatoire.');return;}
+  liens.push({nom:nom||url,url});saveLocal();fermerAjoutLien();renderListeLiens();
+}
+function supprimerLien(i){if(!confirm('Supprimer ce lien ?'))return;liens.splice(i,1);saveLocal();renderListeLiens();}
+
+async function saveParams(){
+  params.responsable=document.getElementById('p-responsable').value;
+  params.mailcontact=document.getElementById('p-mailcontact').value;
+  params.notes=document.getElementById('p-notes').value;
+  params.adresse=document.getElementById('p-adresse').value;
+  showSync('...');
+  try{await apiPost({action:'saveParams',data:params});showSync('Enregistré',true);}
+  catch(e){showSync('Erreur',false);}
+}
+
+// Calendrier SEI
+function calNav(dir){calDate.setMonth(calDate.getMonth()+dir);renderCalSEI();}
+function renderCalSEI(){
+  const titreEl=document.getElementById('cal-titre');
+  const gridEl=document.getElementById('cal-grid');
+  if(!titreEl||!gridEl) return;
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  titreEl.textContent=`${MOIS[m]} ${y}`;
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const today=new Date();
+  const seiDates=new Set(candidats.filter(c=>c.datesei).map(c=>{const d=new Date(c.datesei);return d.getFullYear()===y&&d.getMonth()===m?d.getDate():null;}).filter(Boolean));
+  let html=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(j=>`<div class="cal-day header">${j}</div>`).join('');
+  const startDay=(first===0?6:first-1);
+  for(let i=0;i<startDay;i++)html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=days;d++){
+    const isSEI=seiDates.has(d);
+    const isToday=today.getDate()===d&&today.getMonth()===m&&today.getFullYear()===y;
+    const count=candidats.filter(c=>{if(!c.datesei)return false;const dd=new Date(c.datesei);return dd.getDate()===d&&dd.getMonth()===m&&dd.getFullYear()===y;}).length;
+    html+=`<div class="cal-day${isSEI?' has-sei':''}${isToday?' today':''}" title="${isSEI?count+' candidat(s)':''}">${d}${isSEI?`<div class="cal-sei-dot"></div>`:''}</div>`;
+  }
+  gridEl.innerHTML=html;
+}
+
+// Journal
+function renderJournal(){
+  document.getElementById('journal-list').innerHTML=journal.length?journal.slice(0,30).map(j=>`
+    <div class="journal-item">
+      <div class="journal-avatar">${(j.user||'?').charAt(0).toUpperCase()}</div>
+      <div class="journal-content">
+        <div class="journal-text">${j.texte}</div>
+        <div class="journal-time">${new Date(j.date).toLocaleString('fr-FR')}</div>
+      </div>
+    </div>`).join(''):'<div class="empty">Aucune activité enregistrée</div>';
+}
+
+// Bénévoles (base RH)
+function renderBenevoles(){
+  const el=document.getElementById('tbody-benevoles');
+  if(!el) return;
+  const benevoles=candidats.filter(c=>c.statut==='Adhésion'||c.tutoratvalide);
+  el.innerHTML=benevoles.length?benevoles.map(c=>`<tr><td><strong>${c.nom}</strong></td><td>${c.prenom}</td><td>${tagAntenne(c.antenne)}</td><td><small>${c.diplomes||'—'}</small></td><td>${c.tuteur||'—'}</td><td>${c.datecand||'—'}</td><td>${c.tutoratvalide?'<span class="badge-ok">✓ Validé</span>':'<span class="badge-no">En cours</span>'}</td></tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gris2)">Aucun bénévole enregistré</td></tr>`;
+}
+
+function exportBenevoles(){
+  const benevoles=candidats.filter(c=>c.statut==='Adhésion'||c.tutoratvalide);
+  const csv=['Nom,Prénom,Mail,Téléphone,Antenne,Diplômes,Tuteur,Date adhésion,Tutorat validé',...benevoles.map(c=>[c.nom,c.prenom,c.mail,c.tel,c.antenne,c.diplomes,c.tuteur,c.datecand,c.tutoratvalide?'Oui':'Non'].map(v=>`"${v||''}"`).join(','))].join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='benevoles_adpc69.csv';a.click();
+}
+
+// ── CHIPS ─────────────────────────────────────────────────
+function refreshSelects(){
+  ['entretienpar','notespar'].forEach(f=>{
+    const sel=document.getElementById('sel-'+f);if(!sel)return;
+    const already=chipsState[f]||[];
+    sel.innerHTML='<option value="">+ Ajouter un membre...</option>'+membres.filter(m=>!already.includes(m.nom)).map(m=>`<option value="${m.nom}">${m.nom}</option>`).join('');
+  });
+}
+function addChip(field,sel){
+  const val=sel.value;if(!val)return;
+  if(!chipsState[field])chipsState[field]=[];
+  if(!chipsState[field].includes(val)){chipsState[field].push(val);renderChips(field);refreshSelects();}
+  sel.value='';
+}
+function removeChip(field,val){chipsState[field]=chipsState[field].filter(v=>v!==val);renderChips(field);refreshSelects();}
+function renderChips(f){
+  const c=document.getElementById('chips-'+f);if(!c)return;
+  c.innerHTML=(chipsState[f]||[]).map(v=>`<div class="chip">${v}<button onclick="removeChip('${f}','${v}')">×</button></div>`).join('');
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function getAntenneTag(a){
+  const defaults={Lyon:'tag-lyon',Tassin:'tag-tassin',Villefranche:'tag-villefranche',Villeurbanne:'tag-villeurbanne'};
+  return defaults[a]||'tag-double';
+}
+function tagAntenne(a){if(!a)return '';return `<span class="tag ${getAntenneTag(a)}">${a}</span>`;}
+function tagProfil(p){if(!p)return '';const m={'Double affectation':'tag-double','Déjà formé':'tag-forme'};return m[p]?`<span class="tag ${m[p]}">${p}</span>`:'';}
+function pillStatut(s){const m={Candidature:'s-candidature',SEI:'s-sei',Entretien:'s-entretien',Adhésion:'s-adhesion',Refusé:'s-refuse',Abandon:'s-abandon',Archivé:'s-archive'};return `<span class="statut-pill ${m[s]||''}">${s||'—'}</span>`;}
+
+// ── MODAL ─────────────────────────────────────────────────
+function refreshAntenneSelect(){
+  document.getElementById('f-antenne').innerHTML='<option value="">Choisir...</option>'+antennes.map(a=>`<option>${a}</option>`).join('');
+}
+function openModal(id){
+  currentId=id||null;
+  const c=id?candidats.find(x=>x.id===id):{};
+  document.getElementById('modal-title').textContent=id?`${c.nom} ${c.prenom}`:'Nouveau candidat';
+  document.getElementById('btn-supprimer').style.display=id?'block':'none';
+  document.getElementById('btn-archiver').style.display=(id&&!STATUTS_ARCHIVE.includes(c.statut))?'block':'none';
+  refreshAntenneSelect();
+  ['nom','prenom','mail','tel','cp','age','antenne','profil','diplomes','origine','motivation','statut','datecand','datesei','statutsei','dateentretien','resultat','notes','noteslibres','tuteur','datedebuttutorat','datefintutorat'].forEach(f=>{const el=document.getElementById('f-'+f);if(el)el.value=c[f]||'';});
+  ['invitsei','presentsei','mailentretien','dossierenv','dossierret','eprotec','tutoratvalide'].forEach(f=>{const el=document.getElementById('f-'+f);if(el)el.checked=!!c[f];});
+  chipsState.entretienpar=c.entretienpar?c.entretienpar.split(',').map(s=>s.trim()).filter(Boolean):[];
+  chipsState.notespar=c.notespar?c.notespar.split(',').map(s=>s.trim()).filter(Boolean):[];
+  renderChips('entretienpar');renderChips('notespar');refreshSelects();
+  if(!id){document.getElementById('f-datecand').value=new Date().toISOString().split('T')[0];document.getElementById('f-statut').value='Candidature';}
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');currentId=null;}
+function closeOverlay(e){if(e.target.id==='overlay')closeModal();}
+
+async function archiverCandidat(){
+  const c=candidats.find(x=>x.id===currentId);
+  if(!c||!confirm(`Archiver ${c.nom} ${c.prenom} ?`))return;
+  c.statut='Archivé';
+  addJournal(`Archivé : ${c.nom} ${c.prenom}`);
+  showSync('...');
+  try{await apiPost({action:'saveCandidat',data:c});showSync('Archivé',true);}
+  catch(e){showSync('Erreur',false);}
+  closeModal();render();
+}
+
+async function sauvegarder(){
+  const nom=document.getElementById('f-nom').value.trim();
+  const prenom=document.getElementById('f-prenom').value.trim();
+  const mail=document.getElementById('f-mail').value.trim();
+  if(!nom||!prenom||!mail){alert('Nom, prénom et mail obligatoires.');return;}
+  const data={nom:nom.toUpperCase(),prenom,mail,tel:document.getElementById('f-tel').value,cp:document.getElementById('f-cp').value,age:document.getElementById('f-age').value,antenne:document.getElementById('f-antenne').value,profil:document.getElementById('f-profil').value,diplomes:document.getElementById('f-diplomes').value,origine:document.getElementById('f-origine').value,motivation:document.getElementById('f-motivation').value,statut:document.getElementById('f-statut').value,datecand:document.getElementById('f-datecand').value,datesei:document.getElementById('f-datesei').value,statutsei:document.getElementById('f-statutsei').value,invitsei:document.getElementById('f-invitsei').checked,presentsei:document.getElementById('f-presentsei').checked,dateentretien:document.getElementById('f-dateentretien').value,entretienpar:chipsState.entretienpar.join(', '),mailentretien:document.getElementById('f-mailentretien').checked,resultat:document.getElementById('f-resultat').value,notes:document.getElementById('f-notes').value,noteslibres:document.getElementById('f-noteslibres').value,notespar:chipsState.notespar.join(', '),dossierenv:document.getElementById('f-dossierenv').checked,dossierret:document.getElementById('f-dossierret').checked,eprotec:document.getElementById('f-eprotec').checked,tuteur:document.getElementById('f-tuteur').value,datedebuttutorat:document.getElementById('f-datedebuttutorat').value,datefintutorat:document.getElementById('f-datefintutorat').value,tutoratvalide:document.getElementById('f-tutoratvalide').checked};
+  if(currentId){const idx=candidats.findIndex(c=>c.id===currentId);candidats[idx]={...candidats[idx],...data};addJournal(`Fiche modifiée : ${nom} ${prenom}`);}
+  else{data.id=Date.now();candidats.push(data);addJournal(`Nouveau candidat : ${nom} ${prenom}`);}
+  showSync('Enregistrement...');
+  try{await apiPost({action:'saveCandidat',data});showSync('Enregistré',true);}
+  catch(e){showSync('Erreur',false);}
+  closeModal();render();
+}
+
+async function supprimerCandidat(){
+  if(!confirm('Supprimer définitivement ?'))return;
+  const c=candidats.find(x=>x.id===currentId);if(!c)return;
+  addJournal(`Supprimé : ${c.nom} ${c.prenom}`);
+  showSync('...');
+  try{await apiPost({action:'deleteCandidat',id:c.mail});candidats=candidats.filter(c=>c.id!==currentId);showSync('Supprimé',true);}
+  catch(e){showSync('Erreur',false);}
+  closeModal();render();
+}
+
+// ── ONGLETS PARAMÈTRES ───────────────────────────────────
+function showPtab(tab,btn){
+  ['pole','config','journal','postit'].forEach(t=>{
+    document.getElementById('ptab-content-'+t).style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(tab==='journal')renderJournal();
+  if(tab==='postit')renderPostits();
+  if(tab==='config')renderListeAntennes();
+}
+
+function updatePoleAffich(){
+  const resp=document.getElementById('p-responsable').value;
+  const mail=document.getElementById('p-mailcontact').value;
+  document.getElementById('pole-resp-affich').textContent=resp?'Responsable : '+resp:'Responsable : —';
+  document.getElementById('pole-mail-affich').textContent=mail||'—';
+  const initiales=(resp||'PC').split(' ').map(w=>w.charAt(0).toUpperCase()).slice(0,2).join('');
+  document.getElementById('pole-avatar-big').textContent=initiales;
+}
+
+// ── POST-ITS ─────────────────────────────────────────────
+let postits=JSON.parse(localStorage.getItem('adpc69_postits')||'[]');
+let postitColor='#FEF08A';
+
+function savePostits(){localStorage.setItem('adpc69_postits',JSON.stringify(postits));}
+
+function renderPostits(){
+  const board=document.getElementById('postit-board');
+  if(!board)return;
+  board.innerHTML=postits.length?postits.map((p,i)=>`
+    <div class="postit" style="background:${p.color||'#FEF08A'}">
+      <button class="postit-del" onclick="supprimerPostit(${i})">✕</button>
+      <div class="postit-auteur">${p.auteur||'Anonyme'}</div>
+      <div class="postit-texte">${p.texte}</div>
+      <div class="postit-date">${new Date(p.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</div>
+    </div>`).join(''):'<div class="empty" style="width:100%">Aucun message — soyez le premier !</div>';
+}
+
+function openNouveauPostit(){document.getElementById('form-postit').style.display='block';}
+function fermerNouveauPostit(){
+  document.getElementById('form-postit').style.display='none';
+  document.getElementById('pi-auteur').value='';
+  document.getElementById('pi-texte').value='';
+}
+
+function selectPostitColor(btn){
+  document.querySelectorAll('.pi-color-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  postitColor=btn.dataset.color;
+}
+
+function sauvegarderPostit(){
+  const texte=document.getElementById('pi-texte').value.trim();
+  const auteur=document.getElementById('pi-auteur').value.trim();
+  if(!texte){alert('Écris quelque chose !');return;}
+  postits.unshift({texte,auteur:auteur||'Anonyme',color:postitColor,date:new Date().toISOString()});
+  savePostits();fermerNouveauPostit();renderPostits();
+}
+
+function supprimerPostit(i){
+  if(!confirm('Supprimer ce message ?'))return;
+  postits.splice(i,1);savePostits();renderPostits();
+}
+
+const syncBtn=document.createElement('button');
+syncBtn.className='nav-btn';syncBtn.textContent='↻';syncBtn.title='Synchroniser';
+syncBtn.onclick=chargerDonnees;syncBtn.style.fontSize='14px';
+document.getElementById('main-nav').appendChild(syncBtn);
+
+loadLocal();
+chargerDonnees();
+</script>
+</body>
+</html>
